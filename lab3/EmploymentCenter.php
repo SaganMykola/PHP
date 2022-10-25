@@ -17,18 +17,4 @@ class EmploymentCenter
         $this->date_of_reg = $array['date-of-reg'];
     }
 
-    public function validation($array) {
-        if (empty($array["name"]) ||
-            empty($array["sex"]) ||
-            $array["year-of-birth"] < 0 ||
-            empty($array["specialty"]) ||
-            empty($array["date-of-reg"]))
-            $validation = false;
-        else
-            $validation = true;
-        return $validation;
-    }
-
 }
-
-
