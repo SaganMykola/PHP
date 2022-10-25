@@ -45,12 +45,16 @@ class EmploymentCenterCollection{
         ];
     }
 
-    public  function getByCode($code){
-        foreach ($this->employments as $employment){
-            if ($employment->code == $code){
-                return $employment;
-            }
-        }
+    public function validation($array) {
+        if (empty($array["name"]) ||
+            empty($array["sex"]) ||
+            $array["year-of-birth"] < 0 ||
+            empty($array["specialty"]) ||
+            empty($array["date-of-reg"]))
+            $validation = false;
+        else
+            $validation = true;
+        return $validation;
     }
 
     public function showTable(){
@@ -80,7 +84,7 @@ class EmploymentCenterCollection{
         date_default_timezone_set('UTC');
         $year = date("Y");
         foreach ($this->employments as $employment){
-            if ($year - $employment->year_of_birth >= 60){ //&& $this->employments['sex'] == "Жіноча") || ($year - $this->employments['year-of-birth'] >= 65 && $this->employments['sex'] == "Чоловіча")) {
+            if (($year - $employment->year_of_birth >= 60 && $employment->sex == "Жіноча") || ($year - $employment->year_of_birth >= 65 && $employment->sex == "Чоловіча")) {
                 array_push($unemployed, $employment);
             }
         }
@@ -104,17 +108,20 @@ class EmploymentCenterCollection{
     }
 
     public function add($employment){
-        $this->employments[] = $employment;
+        if ($this->validation($employment) === true)
+            $this->employments[] = $employment;
     }
 
     public function edit($array){
         foreach ($this->employments as $employment){
-            if ($this->getByCode($array['code']) == $employment->code){
-                $employment->name = $array['name'];
-                $employment->sex = $array['sex'];
-                $employment->year_of_birth = $array['year-of-birth'];
-                $employment->specialty = $array['specialty'];
-                $employment->date_of_reg = $array['date-of-reg'];
+            if ($this->validation($array) === true){
+                if ($array['code'] == $employment->code) {
+                    $employment->name = $array['name'];
+                    $employment->sex = $array['sex'];
+                    $employment->year_of_birth = $array['year-of-birth'];
+                    $employment->specialty = $array['specialty'];
+                    $employment->date_of_reg = $array['date-of-reg'];
+                }
             }
         }
     }
